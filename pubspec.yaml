@@ -78,5 +78,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/codelab.png
-    - assets/mobile.json
+    - assets/church.json
     - assets/music.mp3
+    - assets/1.png
+    - assets/2.png

@@ -4,25 +4,28 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
-
 import 'package:audioplayers/audioplayers.dart';
+import 'package:handong_chapel_app/main.dart';
+import 'main.dart';
 
 class messagePage extends StatefulWidget {
-  const messagePage({Key? key}) : super(key: key);
+  const messagePage({Key? key, required this.messageOfTheDay})
+      : super(key: key);
+
+  final List<messageOfTheDayInfo> messageOfTheDay;
 
   @override
   _messagePageState createState() => _messagePageState();
 }
 
 class _messagePageState extends State<messagePage> {
+  DateTime now = new DateTime.now();
+
   Duration _duration = new Duration();
   Duration _position = new Duration();
 
   String currentTime = "00:00";
   String completeTime = "00:00";
-
-  //double _duration = 0.0;
-  //double _position = 0.0;
 
   late AudioPlayer advancedPlayer;
   late AudioCache audioCache;
@@ -61,7 +64,7 @@ class _messagePageState extends State<messagePage> {
   Widget _tab(List<Widget> children) {
     return Container(
       padding: EdgeInsets.all(10.0),
-      child: Column(
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: children
             .map((w) => Container(child: w, padding: EdgeInsets.all(6.0)))
@@ -114,6 +117,14 @@ class _messagePageState extends State<messagePage> {
 
   @override
   Widget build(BuildContext context) {
+    DateTime date = new DateTime(now.year, now.month, now.day);
+    String messageDate = date.year.toString() +
+        ':' +
+        date.month.toString() +
+        ':' +
+        date.day.toString();
+
+
     return DefaultTabController(
       length: 1,
       child: Scaffold(
@@ -129,27 +140,9 @@ class _messagePageState extends State<messagePage> {
                 padding: const EdgeInsets.all(15.0),
                 child: ListView(
                   children: [
-                    Text("Psalm 23: \n\n"
-                        "1     The Lord is my shepherd, I lack nothing.\n \n"
-                        "2     He makes me lie down in green pastures,\n"
-                        "he leads me beside quiet waters,\n"
-                        "     he refreshes my soul.\n\n"
-                        "3    He guides me along the right paths\n"
-                        "for his name’s sake.\n\n"
-                        "4    Even though I walk\n"
-                        "through the darkest valley,[a]\n"
-                        "I will fear no evil,\n"
-                        "for you are with me;\n"
-                        "your rod and your staff,\n"
-                        "they comfort me.\n\n"
-                        "5    You prepare a table before me\n"
-                        "in the presence of my enemies.\n"
-                        "You anoint my head with oil;\n"
-                        "my cup overflows.\n\n"
-                        "6    Surely your goodness and love will follow me\n"
-                        "all the days of my life,\n"
-                        "and I will dwell in the house of the Lord\n"
-                        "forever."),
+                    for (var message in widget.messageOfTheDay)
+                      if (messageDate == message.timestamp)
+                        Text(message.message)
                   ],
                 ),
               ),

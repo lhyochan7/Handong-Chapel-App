@@ -9,7 +9,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'ml/text_dector_view.dart';
 
-
 class qtPage extends StatefulWidget {
   const qtPage({Key? key, required this.addMessage, required this.messages})
       : super(key: key);
@@ -26,8 +25,6 @@ class _qtPageState extends State<qtPage> {
   final _controller = TextEditingController();
   final Stream<QuerySnapshot> _productStream =
       FirebaseFirestore.instance.collection('guestBook').snapshots();
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -65,18 +62,30 @@ class _qtPageState extends State<qtPage> {
                                                   .textTheme
                                                   .headline6)),
                                       const SizedBox(height: 5),
-                                      Card(
-                                        margin: const EdgeInsets.only(left: 10),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(15.0),
-                                        ),
-                                        elevation: 10,
-                                        clipBehavior: Clip.antiAlias,
-                                        child: Container(
-                                          margin: const EdgeInsets.all(10),
-                                          child: Text(message.message),
-                                        ),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.end,
+                                        children: [
+                                          Card(
+                                            margin:
+                                                const EdgeInsets.only(left: 10),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(15.0),
+                                            ),
+                                            elevation: 10,
+                                            clipBehavior: Clip.antiAlias,
+                                            child: Container(
+                                              margin: const EdgeInsets.all(10),
+                                              child: Text(message.message),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text(
+                                                '${DateTime.fromMicrosecondsSinceEpoch(message.timestamp * 1000).year}:${DateTime.fromMicrosecondsSinceEpoch(message.timestamp * 1000).month}:${DateTime.fromMicrosecondsSinceEpoch(message.timestamp * 1000).day}\n${DateTime.fromMicrosecondsSinceEpoch(message.timestamp * 1000).hour}:${DateTime.fromMicrosecondsSinceEpoch(message.timestamp * 1000).minute}'),
+                                          ),
+
+                                        ],
                                       ),
                                     ],
                                   ),
@@ -112,24 +121,35 @@ class _qtPageState extends State<qtPage> {
                                                   .textTheme
                                                   .headline6)),
                                       const SizedBox(height: 5),
-                                      Card(
-                                        margin:
-                                            const EdgeInsets.only(right: 10),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(15.0),
-                                        ),
-                                        elevation: 10,
-                                        clipBehavior: Clip.antiAlias,
-                                        child: Container(
-                                          margin: const EdgeInsets.all(10),
-                                          child: Text(message.message),
-                                        ),
+                                      Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                        children: [
+                                          Card(
+                                            margin:
+                                                const EdgeInsets.only(right: 10),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(15.0),
+                                            ),
+                                            elevation: 10,
+                                            clipBehavior: Clip.antiAlias,
+                                            child: Container(
+                                              margin: const EdgeInsets.all(10),
+                                              child: Text(message.message),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text(
+                                                '${DateTime.fromMicrosecondsSinceEpoch(message.timestamp * 1000).year}:${DateTime.fromMicrosecondsSinceEpoch(message.timestamp * 1000).month}:${DateTime.fromMicrosecondsSinceEpoch(message.timestamp * 1000).day}\n${DateTime.fromMicrosecondsSinceEpoch(message.timestamp * 1000).hour}:${DateTime.fromMicrosecondsSinceEpoch(message.timestamp * 1000).minute}'),
+                                          ),
+
+                                        ],
                                       ),
                                     ],
                                   ),
                                 ),
-
                               ],
                             ),
                   ]),
@@ -149,16 +169,17 @@ class _qtPageState extends State<qtPage> {
                     child: Row(
                       children: [
                         IconButton(
-                          icon: const Icon(
-                            Icons.camera_alt_rounded,
-                          ),
-                            onPressed: ()  {
+                            icon: const Icon(
+                              Icons.camera_alt_rounded,
+                            ),
+                            onPressed: () {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => TextDetectorView(addMessage: (message) =>
-                                          widget.addMessage(
-                                              message),)));
+                                      builder: (context) => TextDetectorView(
+                                            addMessage: (message) =>
+                                                widget.addMessage(message),
+                                          )));
                             }),
                         Expanded(
                           child: TextFormField(

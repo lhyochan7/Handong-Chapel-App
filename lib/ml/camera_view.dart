@@ -8,21 +8,24 @@ import 'package:image_picker/image_picker.dart';
 
 import '../main.dart';
 
-
 enum ScreenMode { liveFeed, gallery }
 
 class CameraView extends StatefulWidget {
   CameraView(
       {Key? key,
-        required this.title,
-        required this.customPaint,
-        required this.onImage,
-        this.initialDirection = CameraLensDirection.back})
+      required this.title,
+      required this.customPaint,
+      required this.addMessage,
+      required this.onImage,
+      this.initialDirection = CameraLensDirection.back})
       : super(key: key);
 
   final String title;
   final CustomPaint? customPaint;
-  final Function(InputImage inputImage) onImage;
+
+  final Function(String message) addMessage;
+  final Function(InputImage inputImage, TextEditingController imageText)
+      onImage;
   final CameraLensDirection initialDirection;
 
   @override
@@ -30,6 +33,8 @@ class CameraView extends StatefulWidget {
 }
 
 class _CameraViewState extends State<CameraView> {
+  TextEditingController processedText = TextEditingController();
+
   ScreenMode _mode = ScreenMode.gallery;
   CameraController? _controller;
   File? _image;
@@ -65,14 +70,11 @@ class _CameraViewState extends State<CameraView> {
           Padding(
             padding: EdgeInsets.only(right: 20.0),
             child: GestureDetector(
-              onTap: _switchScreenMode,
-              child: Icon(
-                _mode == ScreenMode.liveFeed
-                    ? Icons.photo_library_outlined
-                    : (Platform.isIOS
-                    ? Icons.camera_alt_outlined
-                    : Icons.camera),
-              ),
+              onTap: () async {
+                widget.addMessage(processedText.text);
+                Navigator.pop(context);
+              },
+              child: Text("Upload")
             ),
           ),
         ],
@@ -102,81 +104,61 @@ class _CameraViewState extends State<CameraView> {
 
   Widget _body() {
     Widget body;
-    if (_mode == ScreenMode.liveFeed)
-      body = _liveFeedBody();
-    else
-      body = _galleryBody();
-    return body;
-  }
+    body = _galleryBody();
 
-  Widget _liveFeedBody() {
-    if (_controller?.value.isInitialized == false) {
-      return Container();
-    }
-    return Container(
-      color: Colors.black,
-      child: Stack(
-        fit: StackFit.expand,
-        children: <Widget>[
-          CameraPreview(_controller!),
-          if (widget.customPaint != null) widget.customPaint!,
-          Positioned(
-            bottom: 100,
-            left: 50,
-            right: 50,
-            child: Slider(
-              value: zoomLevel,
-              min: minZoomLevel,
-              max: maxZoomLevel,
-              onChanged: (newSliderValue) {
-                setState(() {
-                  zoomLevel = newSliderValue;
-                  _controller!.setZoomLevel(zoomLevel);
-                });
-              },
-              divisions: (maxZoomLevel - 1).toInt() < 1
-                  ? null
-                  : (maxZoomLevel - 1).toInt(),
-            ),
-          )
-        ],
-      ),
-    );
+    return body;
   }
 
   Widget _galleryBody() {
     return ListView(shrinkWrap: true, children: [
       _image != null
           ? Container(
-        height: 400,
-        width: 400,
-        child: Stack(
-          fit: StackFit.expand,
-          children: <Widget>[
-            Image.file(_image!),
-            if (widget.customPaint != null) widget.customPaint!,
-          ],
-        ),
-      )
+              height: 400,
+              width: 400,
+              child: Stack(
+                fit: StackFit.expand,
+                children: <Widget>[
+                  Image.file(_image!),
+                  if (widget.customPaint != null) widget.customPaint!,
+                ],
+              ),
+            )
           : Icon(
-        Icons.image,
-        size: 200,
-      ),
+              Icons.image,
+              size: 200,
+            ),
       Padding(
         padding: EdgeInsets.symmetric(horizontal: 16),
         child: ElevatedButton(
-          child: Text('From Gallery'),
+          child: Text('Pick Image'),
           onPressed: () => _getImage(ImageSource.gallery),
         ),
       ),
       Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16),
-        child: ElevatedButton(
-          child: Text('Take a picture'),
-          onPressed: () => _getImage(ImageSource.camera),
+        padding: const EdgeInsets.all(16.0),
+        child: TextFormField(
+          keyboardType: TextInputType.multiline,
+          minLines: 6,
+          maxLines: null,
+          decoration: new InputDecoration(
+            labelText: "From Image",
+            focusedBorder: OutlineInputBorder(
+              borderSide:
+                  BorderSide(color: Colors.deepPurpleAccent, width: 2.5),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.grey, width: 1.5),
+            ),
+          ),
+          controller: processedText,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please enter some text';
+            }
+            return null;
+          },
         ),
       ),
-
     ]);
   }
 
@@ -244,7 +226,7 @@ class _CameraViewState extends State<CameraView> {
       _image = File(pickedFile);
     });
     final inputImage = InputImage.fromFilePath(pickedFile);
-    widget.onImage(inputImage);
+    widget.onImage(inputImage, processedText);
   }
 
   Future _processCameraImage(CameraImage image) async {
@@ -255,7 +237,7 @@ class _CameraViewState extends State<CameraView> {
     final bytes = allBytes.done().buffer.asUint8List();
 
     final Size imageSize =
-    Size(image.width.toDouble(), image.height.toDouble());
+        Size(image.width.toDouble(), image.height.toDouble());
 
     final camera = cameras[_cameraIndex];
     final imageRotation =
@@ -267,7 +249,7 @@ class _CameraViewState extends State<CameraView> {
             InputImageFormat.NV21;
 
     final planeData = image.planes.map(
-          (Plane plane) {
+      (Plane plane) {
         return InputImagePlaneMetadata(
           bytesPerRow: plane.bytesPerRow,
           height: plane.height,
@@ -284,8 +266,8 @@ class _CameraViewState extends State<CameraView> {
     );
 
     final inputImage =
-    InputImage.fromBytes(bytes: bytes, inputImageData: inputImageData);
+        InputImage.fromBytes(bytes: bytes, inputImageData: inputImageData);
 
-    widget.onImage(inputImage);
+    widget.onImage(inputImage, processedText);
   }
 }

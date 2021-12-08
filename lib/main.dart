@@ -9,12 +9,9 @@ import 'package:provider/provider.dart';
 
 import 'src/authentication.dart';
 import 'src/widgets.dart';
-
 import 'home.dart';
 
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:flutter_signin_button/flutter_signin_button.dart';
-import 'package:assets_audio_player/assets_audio_player.dart';
 
 
 List<CameraDescription> cameras = [];
@@ -40,17 +37,12 @@ class App extends StatelessWidget {
       theme:
       ThemeData(
         brightness: Brightness.light,
-        /* light theme settings */
       ),
       darkTheme: ThemeData(
         brightness: Brightness.dark,
-        /* dark theme settings */
       ),
       themeMode: ThemeMode.dark,
-      /* ThemeMode.system to follow system theme,
-         ThemeMode.light for light theme,
-         ThemeMode.dark for dark theme
-      */
+
       debugShowCheckedModeBanner: false,
       home: FutureBuilder(
           future: Firebase.initializeApp(),
@@ -119,6 +111,36 @@ class ApplicationState extends ChangeNotifier {
           }
           notifyListeners();
         });
+        _pastorBookSubscription = FirebaseFirestore.instance
+            .collection('pastorBook')
+            .snapshots()
+            .listen((snapshot) {
+          _pastorItem = [];
+          for (final document in snapshot.docs) {
+            _pastorItem.add(
+              document.data()['pastorId'] as String,
+            );
+          }
+          notifyListeners();
+        });
+
+
+        _messageBookSubscription = FirebaseFirestore.instance
+            .collection('messageOfTheDay')
+            .orderBy('timestamp', descending: false)
+            .snapshots()
+            .listen((snapshot) {
+          _messageOfTheDay = [];
+          for (final document in snapshot.docs) {
+            _messageOfTheDay.add(
+              messageOfTheDayInfo(
+                message: document.data()['message'] as String,
+                timestamp: document.data()['timestamp'] as String
+              ),
+            );
+          }
+          notifyListeners();
+        });
 
         _questionBookSubscription = FirebaseFirestore.instance
             .collection('questionBook')
@@ -136,6 +158,23 @@ class ApplicationState extends ChangeNotifier {
                 name: document.data()['name'] as String,
                 timestamp: document.data()['timestamp'] as int,
               ),
+            );
+          }
+          notifyListeners();
+        });
+        _locationSubscription = FirebaseFirestore.instance
+            .collection('locations')
+            .snapshots()
+            .listen((snapshot) {
+          _locationsItem = [];
+          for (final document in snapshot.docs) {
+            _locationsItem.add(
+              locationInfo(
+                locationId: document.data()['locationId'] as String ,
+                longitude: document.data()['longitude'] as double ,
+                latitude: document.data()['latitude'] as double,
+                geopoint: document.data()['geopoint'] as GeoPoint,
+              )
             );
           }
           notifyListeners();
@@ -168,10 +207,21 @@ class ApplicationState extends ChangeNotifier {
       notifyListeners();
     });
   }
+  StreamSubscription<QuerySnapshot>? _pastorBookSubscription;
+  List<String> _pastorItem = [];
+  List<String> get pastorItem => _pastorItem;
 
   StreamSubscription<QuerySnapshot>? _questionBookSubscription;
   List<questionInfo> _questionsItem = [];
   List<questionInfo> get questionsItem => _questionsItem;
+
+  StreamSubscription<QuerySnapshot>? _messageBookSubscription;
+  List<messageOfTheDayInfo> _messageOfTheDay = [];
+  List<messageOfTheDayInfo> get messageOfTheDay => _messageOfTheDay;
+
+  StreamSubscription<QuerySnapshot>? _locationSubscription;
+  List<locationInfo> _locationsItem = [];
+  List<locationInfo> get locationsItem => _locationsItem;
 
   ApplicationLoginState _loginState = ApplicationLoginState.loggedOut;
   ApplicationLoginState get loginState => _loginState;
@@ -275,6 +325,21 @@ class ApplicationState extends ChangeNotifier {
     });
   }
 
+  Future<DocumentReference> addLocations(String locationId, double longitude, double latitude, GeoPoint geopoint) {
+    if (_loginState != ApplicationLoginState.loggedIn) {
+      throw Exception('Must be logged in');
+    }
+
+    return FirebaseFirestore.instance
+        .collection('locations')
+        .add({
+      'locationId': locationId,
+      'longitude': longitude,
+      'latitude': latitude,
+      'geopoint': geopoint,
+    });
+  }
+
   Future<DocumentReference> addQuestionToQuestionBook(String question) {
     if (_loginState != ApplicationLoginState.loggedIn) {
       throw Exception('Must be logged in');
@@ -301,6 +366,29 @@ class ApplicationState extends ChangeNotifier {
     notifyListeners();
     //init();
   }
+}
+
+
+class locationInfo{
+  locationInfo({
+    required this.locationId,
+    required this.latitude,
+    required this.longitude,
+    required this.geopoint,
+  });
+  final String locationId;
+  final double latitude;
+  final double longitude;
+  final GeoPoint geopoint;
+}
+
+class messageOfTheDayInfo{
+  messageOfTheDayInfo({
+    required this.message,
+    required this.timestamp,
+});
+  final String message;
+  final String timestamp;
 }
 
 class questionInfo {
@@ -419,71 +507,5 @@ class _GuestBookState extends State<GuestBook> {
         const SizedBox(height: 8),
       ],
     );
-  }
-}
-
-class YesNoSelection extends StatelessWidget {
-  const YesNoSelection({required this.state, required this.onSelection});
-
-  final Attending state;
-  final void Function(Attending selection) onSelection;
-
-  @override
-  Widget build(BuildContext context) {
-    switch (state) {
-      case Attending.yes:
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(elevation: 0),
-                onPressed: () => onSelection(Attending.yes),
-                child: const Text('YES'),
-              ),
-              const SizedBox(width: 8),
-              TextButton(
-                onPressed: () => onSelection(Attending.no),
-                child: const Text('NO'),
-              ),
-            ],
-          ),
-        );
-      case Attending.no:
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              TextButton(
-                onPressed: () => onSelection(Attending.yes),
-                child: const Text('YES'),
-              ),
-              const SizedBox(width: 8),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(elevation: 0),
-                onPressed: () => onSelection(Attending.no),
-                child: const Text('NO'),
-              ),
-            ],
-          ),
-        );
-      default:
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              StyledButton(
-                onPressed: () => onSelection(Attending.yes),
-                child: const Text('YES'),
-              ),
-              const SizedBox(width: 8),
-              StyledButton(
-                onPressed: () => onSelection(Attending.no),
-                child: const Text('NO'),
-              ),
-            ],
-          ),
-        );
-    }
   }
 }

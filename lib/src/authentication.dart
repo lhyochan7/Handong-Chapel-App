@@ -26,21 +26,21 @@ class Authentication extends StatelessWidget {
   final String? email;
   final void Function() startLoginFlow;
   final void Function(
-    String email,
-    void Function(Exception e) error,
-  ) verifyEmail;
+      String email,
+      void Function(Exception e) error,
+      ) verifyEmail;
   final void Function(
-    String email,
-    String password,
-    void Function(Exception e) error,
-  ) signInWithEmailAndPassword;
+      String email,
+      String password,
+      void Function(Exception e) error,
+      ) signInWithEmailAndPassword;
   final void Function() cancelRegistration;
   final void Function(
-    String email,
-    String displayName,
-    String password,
-    void Function(Exception e) error,
-  ) registerAccount;
+      String email,
+      String displayName,
+      String password,
+      void Function(Exception e) error,
+      ) registerAccount;
   final void Function() signOut;
 
   @override
@@ -48,7 +48,6 @@ class Authentication extends StatelessWidget {
     switch (loginState) {
       case ApplicationLoginState.loggedOut:
         return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
               padding: const EdgeInsets.only(left: 24, bottom: 8),
@@ -56,7 +55,7 @@ class Authentication extends StatelessWidget {
                 onPressed: () {
                   startLoginFlow();
                 },
-                child: const Text('LOGIN'),
+                child: const Text('RSVP'),
               ),
             ),
           ],
@@ -70,7 +69,7 @@ class Authentication extends StatelessWidget {
           email: email!,
           login: (email, password) {
             signInWithEmailAndPassword(email, password,
-                (e) => _showErrorDialog(context, 'Failed to sign in', e));
+                    (e) => _showErrorDialog(context, 'Failed to sign in', e));
           },
         );
       case ApplicationLoginState.register:
@@ -80,21 +79,20 @@ class Authentication extends StatelessWidget {
             cancelRegistration();
           },
           registerAccount: (
-            email,
-            displayName,
-            password,
-          ) {
+              email,
+              displayName,
+              password,
+              ) {
             registerAccount(
                 email,
                 displayName,
                 password,
-                (e) =>
+                    (e) =>
                     _showErrorDialog(context, 'Failed to create account', e));
           },
         );
       case ApplicationLoginState.loggedIn:
         return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
               padding: const EdgeInsets.only(left: 24, bottom: 8),
@@ -224,7 +222,7 @@ class RegisterForm extends StatefulWidget {
   });
   final String email;
   final void Function(String email, String displayName, String password)
-      registerAccount;
+  registerAccount;
   final void Function() cancel;
   @override
   _RegisterFormState createState() => _RegisterFormState();

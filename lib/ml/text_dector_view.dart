@@ -18,6 +18,8 @@ class _TextDetectorViewState extends State<TextDetectorView> {
   TextDetector textDetector = GoogleMlKit.vision.textDetector();
   bool isBusy = false;
   CustomPaint? customPaint;
+  TextEditingController imageText = TextEditingController();
+
 
   @override
   void dispose() async {
@@ -30,19 +32,18 @@ class _TextDetectorViewState extends State<TextDetectorView> {
     return CameraView(
       title: 'Text Detector',
       customPaint: customPaint,
-      onImage: (inputImage) {
-        processImage(inputImage);
+      addMessage: widget.addMessage,
+      onImage: (inputImage, imageText) {
+        processImage(inputImage, imageText);
       },
     );
   }
 
-  Future<void> processImage(InputImage inputImage) async {
+  Future<void> processImage(InputImage inputImage, TextEditingController processedText) async {
     if (isBusy) return;
     isBusy = true;
     final recognisedText = await textDetector.processImage(inputImage);
-    print('Found ${recognisedText.blocks.length} textBlocks');
-    print('This is the text: ${recognisedText.text}');
-    widget.addMessage(recognisedText.text);
+
     if (inputImage.inputImageData?.size != null &&
         inputImage.inputImageData?.imageRotation != null) {
       final painter = TextDetectorPainter(
@@ -55,7 +56,9 @@ class _TextDetectorViewState extends State<TextDetectorView> {
     }
     isBusy = false;
     if (mounted) {
-      setState(() {});
+      setState(() {
+        processedText.text = recognisedText.text;
+      });
     }
   }
 }
