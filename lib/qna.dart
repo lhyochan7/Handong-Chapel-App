@@ -88,7 +88,7 @@ class _QnAPageState extends State<QnAPage> {
                       ),
                       elevation: 10,
                       clipBehavior: Clip.antiAlias,
-                      color: Color(0xffF8F2EE),
+                      //color: Color(0xffF8F2EE),
                       margin: const EdgeInsets.all(10),
                       child: Padding(
                         padding: const EdgeInsets.all(10.0),
@@ -99,7 +99,7 @@ class _QnAPageState extends State<QnAPage> {
                               'Question',
                               style: TextStyle(
                                   fontSize: 20,
-                                  color: Colors.black,
+                                  color: Colors.white,
                                   fontWeight: FontWeight.bold),
                             ),
                             const Divider(
@@ -111,7 +111,7 @@ class _QnAPageState extends State<QnAPage> {
                             ),
                             Text('${question.question}',
                                 style: TextStyle(
-                                    fontSize: 18, color: Colors.grey)),
+                                    fontSize: 18, color: Colors.white)),
                             authorized
                                 ? Align(
                               alignment: Alignment.centerRight,
@@ -153,7 +153,7 @@ class _QnAPageState extends State<QnAPage> {
                       ),
                       elevation: 10,
                       clipBehavior: Clip.antiAlias,
-                      color: Colors.white,
+                      //color: Colors.white,
                       margin: const EdgeInsets.only(left: 10, right: 10),
                       child: Padding(
                         padding: const EdgeInsets.all(10.0),
@@ -162,7 +162,7 @@ class _QnAPageState extends State<QnAPage> {
                             const Text(
                               'Answer',
                               style: TextStyle(
-                                  fontSize: 20, color: Colors.black,fontWeight: FontWeight.bold),
+                                  fontSize: 20, color: Colors.white,fontWeight: FontWeight.bold),
                             ),
                             const Divider(
                               height: 10,
@@ -173,7 +173,7 @@ class _QnAPageState extends State<QnAPage> {
                             ),
                             Text('${question.answer}',
                                 style: TextStyle(
-                                    fontSize: 18, color: Colors.grey)),
+                                    fontSize: 18, color: Colors.white)),
                           ],
                         ),
                       ),

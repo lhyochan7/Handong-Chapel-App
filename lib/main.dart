@@ -135,7 +135,8 @@ class ApplicationState extends ChangeNotifier {
             _messageOfTheDay.add(
               messageOfTheDayInfo(
                 message: document.data()['message'] as String,
-                timestamp: document.data()['timestamp'] as String
+                timestamp: document.data()['timestamp'] as String,
+                passage: document.data()['passage'] as String,
               ),
             );
           }
@@ -386,9 +387,11 @@ class messageOfTheDayInfo{
   messageOfTheDayInfo({
     required this.message,
     required this.timestamp,
+    required this.passage,
 });
   final String message;
   final String timestamp;
+  final String passage;
 }
 
 class questionInfo {

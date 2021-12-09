@@ -70,12 +70,11 @@ class _CameraViewState extends State<CameraView> {
           Padding(
             padding: EdgeInsets.only(right: 20.0),
             child: GestureDetector(
-              onTap: () async {
-                widget.addMessage(processedText.text);
-                Navigator.pop(context);
-              },
-              child: Text("Upload")
-            ),
+                onTap: () async {
+                  widget.addMessage(processedText.text);
+                  Navigator.pop(context);
+                },
+                child: Text("Upload")),
           ),
         ],
       ),
@@ -132,6 +131,9 @@ class _CameraViewState extends State<CameraView> {
         child: ElevatedButton(
           child: Text('Pick Image'),
           onPressed: () => _getImage(ImageSource.gallery),
+          style: ElevatedButton.styleFrom(
+            primary: Color(0xFF4A90E2),
+          ),
         ),
       ),
       Padding(
