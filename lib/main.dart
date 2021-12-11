@@ -335,7 +335,7 @@ class ApplicationState extends ChangeNotifier {
         .add({
       'locationId': locationId,
       'geopoint': geopoint,
-      'name':  FirebaseAuth.instance.currentUser!.displayName,
+      'name':  FirebaseAuth.instance.currentUser!.displayName.toString(),
     });
   }
 

@@ -36,10 +36,11 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
             key: _formKey,
             child: Scaffold(
               appBar: AppBar(
+                title: Text('Question'),
                 leading: TextButton(
                   style: TextButton.styleFrom(
                     textStyle: const TextStyle(fontSize: 12),
-                    primary: Colors.black,
+                    primary: Colors.white,
                   ),
                   onPressed: () {
                     Navigator.pop(context);
@@ -51,8 +52,8 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
                 actions: <Widget>[
                   TextButton(
                     style: TextButton.styleFrom(
-                      textStyle: const TextStyle(fontSize: 12),
-                      primary: Colors.black,
+                      textStyle: const TextStyle(fontSize: 14),
+                      primary: Colors.white,
                     ),
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
@@ -137,10 +138,11 @@ class _AddAnswerPageState extends State<AddAnswerPage> {
             key: _formKey,
             child: Scaffold(
               appBar: AppBar(
+                title: Text('Answer'),
                 leading: TextButton(
                   style: TextButton.styleFrom(
                     textStyle: const TextStyle(fontSize: 12),
-                    primary: Colors.black,
+                    primary: Colors.white,
                   ),
                   onPressed: () {
                     Navigator.pop(context);
@@ -152,7 +154,7 @@ class _AddAnswerPageState extends State<AddAnswerPage> {
                 actions: <Widget>[
                   TextButton(
                     style: TextButton.styleFrom(
-                      textStyle: const TextStyle(fontSize: 12),
+                      textStyle: const TextStyle(fontSize: 14),
                       primary: Colors.black,
                     ),
                     onPressed: () async {
@@ -162,7 +164,8 @@ class _AddAnswerPageState extends State<AddAnswerPage> {
                       }
                       Navigator.pop(context);
                     },
-                    child: const Text('Save'),
+                    child: const Text('Save',
+                        style: TextStyle(fontSize: 14, color: Colors.white)),
                   ),
                 ],
               ),
@@ -174,7 +177,7 @@ class _AddAnswerPageState extends State<AddAnswerPage> {
                       decoration: const BoxDecoration(
                         //border: Border.all(width: 2),
                         borderRadius: BorderRadius.all(Radius.circular(20)),
-                        color: Color(0xffF8F2EE),
+                        //color: Color(0xffF8F2EE),
                       ),
                       margin: const EdgeInsets.all(20),
                       child: Column(
@@ -182,7 +185,10 @@ class _AddAnswerPageState extends State<AddAnswerPage> {
                         children: [
                           const Text(
                             'Question',
-                            style: TextStyle(fontSize: 20, color: Colors.black),
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
                           ),
                           const Divider(
                             height: 10,
@@ -193,7 +199,7 @@ class _AddAnswerPageState extends State<AddAnswerPage> {
                           ),
                           Text('${widget.question}',
                               style:
-                                  TextStyle(fontSize: 18, color: Colors.grey)),
+                                  TextStyle(fontSize: 18, color: Colors.white)),
                         ],
                       )),
                   SizedBox(height: 20),

@@ -130,10 +130,10 @@ class _messagePageState extends State<messagePage> {
           title: Text('Today\'s Reading'),
         ),
         body: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Expanded(
-              flex: 2,
+              flex: 4,
               child: Padding(
                 padding: const EdgeInsets.all(15.0),
                 child: ListView(
@@ -165,10 +165,17 @@ class _messagePageState extends State<messagePage> {
                 ),
               ),
             ),
-            Expanded(
-              flex: 1,
+
+            Flexible(
               child: TabBarView(
                 children: [localAsset()],
+              ),
+            ),
+            Flexible(
+              child: Text(
+                  "Background Music", style:  TextStyle(
+                fontSize: 16,
+                color: Colors.white,)
               ),
             ),
           ],

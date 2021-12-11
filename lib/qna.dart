@@ -12,15 +12,15 @@ import 'add.dart';
 class QnAPage extends StatefulWidget {
   const QnAPage(
       {Key? key,
-        required this.addQuestionToQuestionBook,
-        required this.questions,
-        required this.answerQuestion,
-        required this.pastors})
+      required this.addQuestionToQuestionBook,
+      required this.questions,
+      required this.answerQuestion,
+      required this.pastors})
       : super(key: key);
 
   final FutureOr<void> Function(String question) addQuestionToQuestionBook;
   final FutureOr<void> Function(String documentId, String answer)
-  answerQuestion;
+      answerQuestion;
   final List<questionInfo> questions;
   final List<String> pastors;
 
@@ -30,7 +30,7 @@ class QnAPage extends StatefulWidget {
 
 class _QnAPageState extends State<QnAPage> {
   final Stream<QuerySnapshot> _productStream =
-  FirebaseFirestore.instance.collection('products').snapshots();
+      FirebaseFirestore.instance.collection('products').snapshots();
 
   bool pressed = false;
   bool authorized = false;
@@ -57,7 +57,7 @@ class _QnAPageState extends State<QnAPage> {
         stream: _productStream,
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           return Scaffold(
-            appBar: AppBar(),
+            appBar: AppBar(title: Text("Q&A")),
             floatingActionButton: Container(
               height: 40,
               width: 40,
@@ -114,33 +114,33 @@ class _QnAPageState extends State<QnAPage> {
                                     fontSize: 18, color: Colors.white)),
                             authorized
                                 ? Align(
-                              alignment: Alignment.centerRight,
-                              child: TextButton(
-                                onPressed: () async {
-                                  Navigator.push(
-                                      context,
-                                      await MaterialPageRoute(
-                                          builder: (context) =>
-                                              AddAnswerPage(
-                                                addAnswer: (documentId,
-                                                    answer) =>
-                                                    widget.answerQuestion(
-                                                        documentId,
-                                                        answer),
-                                                documentId:
-                                                question.questionId,
-                                                question:
-                                                question.question,
-                                              )));
-                                },
-                                child: Text(
-                                  'Answer',
-                                  style: TextStyle(
-                                      color: Colors.indigo,
-                                      fontSize: 12),
-                                ),
-                              ),
-                            )
+                                    alignment: Alignment.centerRight,
+                                    child: TextButton(
+                                      onPressed: () async {
+                                        Navigator.push(
+                                            context,
+                                            await MaterialPageRoute(
+                                                builder: (context) =>
+                                                    AddAnswerPage(
+                                                      addAnswer: (documentId,
+                                                              answer) =>
+                                                          widget.answerQuestion(
+                                                              documentId,
+                                                              answer),
+                                                      documentId:
+                                                          question.questionId,
+                                                      question:
+                                                          question.question,
+                                                    )));
+                                      },
+                                      child: Text(
+                                        'Answer',
+                                        style: TextStyle(
+                                            color: Color(0xFF4A90E2),
+                                            fontSize: 12),
+                                      ),
+                                    ),
+                                  )
                                 : Container(),
                           ],
                         ),
@@ -148,36 +148,38 @@ class _QnAPageState extends State<QnAPage> {
                     ),
                     question.answer != "waiting for pastor's answer"
                         ? Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0),
-                      ),
-                      elevation: 10,
-                      clipBehavior: Clip.antiAlias,
-                      //color: Colors.white,
-                      margin: const EdgeInsets.only(left: 10, right: 10),
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Column(
-                          children: [
-                            const Text(
-                              'Answer',
-                              style: TextStyle(
-                                  fontSize: 20, color: Colors.white,fontWeight: FontWeight.bold),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.0),
                             ),
-                            const Divider(
-                              height: 10,
-                              thickness: 1,
-                              indent: 50,
-                              endIndent: 50,
-                              color: Colors.grey,
+                            elevation: 10,
+                            clipBehavior: Clip.antiAlias,
+                            //color: Colors.white,
+                            margin: const EdgeInsets.only(left: 10, right: 10),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Column(
+                                children: [
+                                  const Text(
+                                    'Answer',
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  const Divider(
+                                    height: 10,
+                                    thickness: 1,
+                                    indent: 50,
+                                    endIndent: 50,
+                                    color: Colors.grey,
+                                  ),
+                                  Text('${question.answer}',
+                                      style: TextStyle(
+                                          fontSize: 18, color: Colors.white)),
+                                ],
+                              ),
                             ),
-                            Text('${question.answer}',
-                                style: TextStyle(
-                                    fontSize: 18, color: Colors.white)),
-                          ],
-                        ),
-                      ),
-                    )
+                          )
                         : Container(child: Text(" ")),
                     const SizedBox(
                       height: 20,
