@@ -172,9 +172,8 @@ class ApplicationState extends ChangeNotifier {
             _locationsItem.add(
               locationInfo(
                 locationId: document.data()['locationId'] as String ,
-                longitude: document.data()['longitude'] as double ,
-                latitude: document.data()['latitude'] as double,
                 geopoint: document.data()['geopoint'] as GeoPoint,
+                name: document.data()['name'] as String,
               )
             );
           }
@@ -326,7 +325,7 @@ class ApplicationState extends ChangeNotifier {
     });
   }
 
-  Future<DocumentReference> addLocations(String locationId, double longitude, double latitude, GeoPoint geopoint) {
+  Future<DocumentReference> addLocations(String locationId, GeoPoint geopoint) {
     if (_loginState != ApplicationLoginState.loggedIn) {
       throw Exception('Must be logged in');
     }
@@ -335,9 +334,8 @@ class ApplicationState extends ChangeNotifier {
         .collection('locations')
         .add({
       'locationId': locationId,
-      'longitude': longitude,
-      'latitude': latitude,
       'geopoint': geopoint,
+      'name':  FirebaseAuth.instance.currentUser!.displayName,
     });
   }
 
@@ -373,14 +371,12 @@ class ApplicationState extends ChangeNotifier {
 class locationInfo{
   locationInfo({
     required this.locationId,
-    required this.latitude,
-    required this.longitude,
     required this.geopoint,
+    required this.name,
   });
   final String locationId;
-  final double latitude;
-  final double longitude;
   final GeoPoint geopoint;
+  final String name;
 }
 
 class messageOfTheDayInfo{

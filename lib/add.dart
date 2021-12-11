@@ -3,10 +3,9 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-
-import 'main.dart';
 
 class AddQuestionPage extends StatefulWidget {
   const AddQuestionPage({Key? key, required this.addQuestion})
