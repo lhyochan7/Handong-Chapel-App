@@ -174,16 +174,6 @@ class _CameraViewState extends State<CameraView> {
     setState(() {});
   }
 
-  void _switchScreenMode() async {
-    if (_mode == ScreenMode.liveFeed) {
-      _mode = ScreenMode.gallery;
-      await _stopLiveFeed();
-    } else {
-      _mode = ScreenMode.liveFeed;
-      await _startLiveFeed();
-    }
-    setState(() {});
-  }
 
   Future _startLiveFeed() async {
     final camera = cameras[_cameraIndex];
